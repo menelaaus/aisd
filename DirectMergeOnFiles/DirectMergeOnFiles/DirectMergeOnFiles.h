@@ -53,6 +53,77 @@ bool isFileContainsSortedArray(const string& fileName)
 	return true;
 }
 
+void partitioningPhase(fstream& file, fstream* FilesToWrite, int p)
+{
+	int readableElement;
+	file >> readableElement;
+
+	int fileNumber = 0;
+	while (file)
+	{
+		for (int i = 0; file && (i < p); i++)
+		{
+			FilesToWrite[fileNumber] << readableElement << " ";
+			file >> readableElement;
+		}
+		fileNumber = 1 - fileNumber;
+	}
+}
+
+int mergePhase(fstream* FilesToRead, fstream* FilesToWrite, int p)
+{
+	int ReadableElement[2];
+	FilesToRead[0] >> ReadableElement[0];
+	FilesToRead[1] >> ReadableElement[1];
+	int fileNumber = 0;
+	while (FilesToRead[0] && FilesToRead[1])
+	{
+		int i = 0, j = 0;
+		while ((FilesToRead[0] && FilesToRead[1]) && i < p && j < p)
+		{
+			if (ReadableElement[0] < ReadableElement[1])
+			{
+				FilesToWrite[fileNumber] << ReadableElement[0] << " ";
+				FilesToRead[0] >> ReadableElement[0];
+				i++;
+			}
+			else
+			{
+				FilesToWrite[fileNumber] << ReadableElement[1] << " ";
+				FilesToRead[1] >> ReadableElement[1];
+				j++;
+			}
+		}
+
+		while (FilesToRead[0] && (i < p))
+		{
+			FilesToWrite[fileNumber] << ReadableElement[0] << " ";
+			FilesToRead[0] >> ReadableElement[0];
+			i++;
+		}
+
+		while (FilesToRead[1] && (j < p))
+		{
+			FilesToWrite[fileNumber] << ReadableElement[1] << " ";
+			FilesToRead[1] >> ReadableElement[1];
+			j++;
+		}
+		fileNumber = 1 - fileNumber;
+	}
+
+	while (FilesToRead[0])
+	{
+		FilesToWrite[fileNumber] << ReadableElement[0] << " ";
+		FilesToRead[0] >> ReadableElement[0];
+	}
+	while (FilesToRead[1])
+	{
+		FilesToWrite[fileNumber] << ReadableElement[1] << " ";
+		FilesToRead[1] >> ReadableElement[1];
+	}
+	return 0;
+}
+
 
 int createAndSortFile(const string& fileName, const int numbersCount, const int maxNumberValue)
 {
