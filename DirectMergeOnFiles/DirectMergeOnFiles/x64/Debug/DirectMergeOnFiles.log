@@ -1,0 +1,4 @@
+﻿  DirectMergeOnFiles.cpp
+C:\Users\Айжан\Desktop\aisd\DirectMergeOnFiles\DirectMergeOnFiles\DirectMergeOnFiles.h(41,12): warning C4305: return: усечение из "int" в "bool"
+C:\Users\Айжан\Desktop\aisd\DirectMergeOnFiles\DirectMergeOnFiles\DirectMergeOnFiles.h(199): warning C4715: sort: значение возвращается не при всех путях выполнения
+  DirectMergeOnFiles.vcxproj -> C:\Users\Айжан\Desktop\aisd\DirectMergeOnFiles\x64\Debug\DirectMergeOnFiles.exe

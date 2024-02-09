@@ -124,6 +124,80 @@ int mergePhase(fstream* FilesToRead, fstream* FilesToWrite, int p)
 	return 0;
 }
 
+bool notEmptyFile(fstream& file)
+{
+	if (file.peek() == ifstream::traits_type::eof())
+	{
+		return false;
+	}
+	return true;
+}
+
+int sort(const std::string& fileName)
+{
+	int p = 1;
+	fstream file(fileName, fstream::in);
+	fstream FilesToWrite[2] = {
+		fstream("a.txt", fstream::out),
+		fstream("b.txt", fstream::out),
+	};
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (!file.is_open() || !FilesToWrite[i].is_open())
+		{
+			return -1;
+		}
+	}
+
+	partitioningPhase(file, FilesToWrite, p);
+
+	bool isSecondFileNotEmpty = notEmptyFile(FilesToWrite[1]);
+
+	for (int i = 0; i < 2; i++)
+	{
+		FilesToWrite[i].close();
+	}
+	file.close();
+
+	while (isSecondFileNotEmpty)
+	{
+		FilesToWrite[0].open("a.txt", fstream::in);
+		FilesToWrite[1].open("b.txt", fstream::in);
+
+		fstream FilesToRead[2] = {
+			fstream("c.txt", fstream::out),
+			fstream("d.txt", fstream::out),
+		};
+
+		mergePhase(FilesToWrite, FilesToRead, p);
+
+		for (int i = 0; i < 2; i++)
+		{
+			FilesToWrite[i].close();
+			FilesToRead[i].close();
+		}
+
+		p = 2 * p;
+
+		FilesToRead[0].open("c.txt", fstream::in);
+		FilesToRead[1].open("d.txt", fstream::in);
+
+		FilesToWrite[0].open("a.txt", fstream::out);
+		FilesToWrite[1].open("b.txt", fstream::out);
+
+		mergePhase(FilesToRead, FilesToWrite, p);
+		isSecondFileNotEmpty = notEmptyFile(FilesToWrite[1]);
+
+		for (int i = 0; i < 2; i++)
+		{
+			FilesToWrite[i].close();
+			FilesToRead[i].close();
+		}
+		p = 2 * p;
+	}
+}
+
 
 int createAndSortFile(const string& fileName, const int numbersCount, const int maxNumberValue)
 {
